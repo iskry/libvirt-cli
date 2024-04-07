@@ -4,6 +4,10 @@ extern crate virt;
 use clap::{Arg, Command};
 use virt::connect::Connect;
 use virt::domain::Domain;
+
+// TODO: need to implement stop functionality
+// TODO: need to implement creation functionality
+// TODO: need to implement delete functionality
 fn main() {
     let matches = Command::new("My VM Manager")
         .version("1.0")
@@ -33,6 +37,7 @@ fn main() {
 }
 
 fn list_vms() {
+    // TODO: Need to list current state of VM
     let conn = Connect::open("qemu:///system").unwrap();
     let domains = conn.list_all_domains(0).unwrap();
 
