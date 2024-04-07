@@ -1,17 +1,17 @@
 extern crate clap;
 extern crate virt;
 
-use clap::{App, Arg, SubCommand};
-use virt::{Connect, Domain};
-
+use clap::{Arg, Command};
+use virt::connect::Connect;
+use virt::domain::Domain;
 fn main() {
-    let matches = App::new("My VM Manager")
+    let matches = Command::new("My VM Manager")
         .version("1.0")
         .about("Manages VMs via libvirt")
-        .subcommand(SubCommand::with_name("list").about("Lists all VMs"))
+        .subcommand(Command::new("list").about("Lists all VMs"))
         .subcommand(
-            SubCommand::with_name("start").about("Starts a VM").arg(
-                Arg::with_name("VM_NAME")
+            Command::new("start").about("Starts a VM").arg(
+                Arg::new("VM_NAME")
                     .help("The name of the VM to start")
                     .required(true)
                     .index(1),
@@ -20,11 +20,11 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        ("list", Some(_)) => {
+        Some(("list", sub_m)) => {
             list_vms();
         }
-        ("start", Some(sub_m)) => {
-            if let Some(vm_name) = sub_m.value_of("VM_NAME") {
+        Some(("start", sub_m)) => {
+            if let Some(vm_name) = sub_m.get_one::<String>("VM_NAME") {
                 start_vm(vm_name);
             }
         }
@@ -51,4 +51,3 @@ fn start_vm(vm_name: &str) {
         Err(_) => println!("VM not found: {}", vm_name),
     }
 }
-
